@@ -57,6 +57,18 @@ const server = http.createServer((req, res) => {
       res.statusCode = 204;
       res.end();
     }
+    if (req.method === "PUT") {
+      req.on("data", (chunk) => {
+        const data = chunk.toString();
+        const updatedData = JSON.parse(data);
+        console.log(updatedData);
+        todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+        todos[todoIndex] = updatedData;
+      });
+
+      res.statusCode = 204;
+      res.end();
+    }
     if (req.method === "DELETE") {
       todos = todos.filter((todo) => todo.id !== items[3]);
 
