@@ -36,45 +36,70 @@ const server = http.createServer((req, res) => {
       res.statusCode = 201;
       res.end();
     }
-  }
-  if (items.length === 4) {
+  } else if (req.url === `/api/todos/${items[3]}`) {
     if (req.method === "GET") {
-      const requestedId = parseInt(items[3]);
-      const requestedTodo = todos.find((todos) => todos.id === requestedId);
-
-      res.statusCode = 200;
-      res.end(JSON.stringify(requestedTodo));
+      const foundTodo = todos.find((todos) => todos.id === items[3]);
+      if (foundTodo) {
+        res.statusCode = 200;
+        res.end(JSON.stringify(requestedTodo));
+      } else {
+        res.statusCode = 404;
+        console.log("Not Found");
+        res.end();
+      }
     }
     if (req.method === "PATCH") {
-      req.on("data", (chunk) => {
-        const data = chunk.toString();
-        const patchData = JSON.parse(data);
-        console.log(patchData.checkmarked);
-        todoIndex = todos.findIndex((todo) => todo.id === items[3]);
-        todos[todoIndex].checkmarked = patchData.checkmarked;
-      });
-
-      res.statusCode = 204;
-      res.end();
+      const foundTodo = todos.find((todos) => todos.id === items[3]);
+      if (foundTodo) {
+        req.on("data", (chunk) => {
+          const data = chunk.toString();
+          const patchData = JSON.parse(data);
+          console.log(patchData.checkmarked);
+          todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+          todos[todoIndex].checkmarked = patchData.checkmarked;
+        });
+        res.statusCode = 204;
+        res.end();
+      } else {
+        res.statusCode = 404;
+        console.log("Not Found");
+        res.end();
+      }
     }
     if (req.method === "PUT") {
-      req.on("data", (chunk) => {
-        const data = chunk.toString();
-        const updatedData = JSON.parse(data);
-        console.log(updatedData);
-        todoIndex = todos.findIndex((todo) => todo.id === items[3]);
-        todos[todoIndex] = updatedData;
-      });
-
-      res.statusCode = 204;
-      res.end();
+      const foundTodo = todos.find((todos) => todos.id === items[3]);
+      if (foundTodo) {
+        req.on("data", (chunk) => {
+          const data = chunk.toString();
+          const updatedData = JSON.parse(data);
+          console.log(updatedData);
+          todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+          todos[todoIndex] = updatedData;
+        });
+        res.statusCode = 204;
+        res.end();
+      } else {
+        res.statusCode = 404;
+        console.log("Not Found");
+        res.end();
+      }
     }
     if (req.method === "DELETE") {
-      todos = todos.filter((todo) => todo.id !== items[3]);
-
-      res.statusCode = 204;
-      res.end();
+      const foundTodo = todos.find((todos) => todos.id === items[3]);
+      if (foundTodo) {
+        todos = todos.filter((todo) => todo.id !== items[3]);
+        res.statusCode = 204;
+        res.end();
+      } else {
+        res.statusCode = 404;
+        console.log("Not Found");
+        res.end();
+      }
     }
+  } else {
+    res.statusCode = 404;
+    console.log("Not Found");
+    res.end();
   }
   res.end();
 });
