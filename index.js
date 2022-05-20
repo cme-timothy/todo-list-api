@@ -1,9 +1,29 @@
 const http = require("http");
+const fs = require("fs");
 const { allowedNodeEnvironmentFlags } = require("process");
 
 const port = 5000;
 
 let todos = [];
+
+jsonData("get");
+function jsonData(getData) {
+  fs.readFile("todos.json", (err, data) => {
+    if (err) throw err;
+
+    const parsedJson = JSON.parse(data);
+    if (getData === "get") {
+      todos = parsedJson.jsonTodos;
+    } else if (getData === "change") {
+      parsedJson.jsonTodos = todos;
+      const stringifiedJson = JSON.stringify(parsedJson);
+      fs.writeFile("todos.json", stringifiedJson, (err) => {
+        if (err) throw err;
+        console.log("Wrote to todos.json");
+      });
+    }
+  });
+}
 
 const server = http.createServer((req, res) => {
   const items = req.url.split("/");
@@ -33,6 +53,7 @@ const server = http.createServer((req, res) => {
         const newTodo = JSON.parse(data);
         todos.push(newTodo);
       });
+      jsonData("change");
       res.statusCode = 201;
       res.end();
     }
@@ -58,6 +79,7 @@ const server = http.createServer((req, res) => {
           todoIndex = todos.findIndex((todo) => todo.id === items[3]);
           todos[todoIndex].checkmarked = patchData.checkmarked;
         });
+        jsonData("change");
         res.statusCode = 204;
         res.end();
       } else {
@@ -76,6 +98,7 @@ const server = http.createServer((req, res) => {
           todoIndex = todos.findIndex((todo) => todo.id === items[3]);
           todos[todoIndex] = updatedData;
         });
+        jsonData("change");
         res.statusCode = 204;
         res.end();
       } else {
@@ -88,6 +111,7 @@ const server = http.createServer((req, res) => {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
         todos = todos.filter((todo) => todo.id !== items[3]);
+        jsonData("change");
         res.statusCode = 204;
         res.end();
       } else {
