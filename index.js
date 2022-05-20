@@ -45,6 +45,18 @@ const server = http.createServer((req, res) => {
       res.statusCode = 200;
       res.end(JSON.stringify(requestedTodo));
     }
+    if (req.method === "PATCH") {
+      req.on("data", (chunk) => {
+        const data = chunk.toString();
+        const patchData = JSON.parse(data);
+        console.log(patchData.checkmarked);
+        todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+        todos[todoIndex].checkmarked = patchData.checkmarked;
+      });
+
+      res.statusCode = 204;
+      res.end();
+    }
     if (req.method === "DELETE") {
       todos = todos.filter((todo) => todo.id !== items[3]);
 
