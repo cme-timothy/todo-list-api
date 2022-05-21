@@ -74,10 +74,10 @@ const server = http.createServer((req, res) => {
       if (foundTodo) {
         req.on("data", (chunk) => {
           const data = chunk.toString();
-          const patchData = JSON.parse(data);
-          console.log(patchData.checkmarked);
+          const updatedTodo = JSON.parse(data);
+          console.log(updatedTodo.checkmarked);
           todoIndex = todos.findIndex((todo) => todo.id === items[3]);
-          todos[todoIndex].checkmarked = patchData.checkmarked;
+          todos[todoIndex].checkmarked = updatedTodo.checkmarked;
         });
         jsonData("change");
         res.statusCode = 204;
@@ -93,10 +93,10 @@ const server = http.createServer((req, res) => {
       if (foundTodo) {
         req.on("data", (chunk) => {
           const data = chunk.toString();
-          const updatedData = JSON.parse(data);
-          console.log(updatedData);
+          const updatedTodo = JSON.parse(data);
+          console.log(updatedTodo);
           todoIndex = todos.findIndex((todo) => todo.id === items[3]);
-          todos[todoIndex] = updatedData;
+          todos[todoIndex] = updatedTodo;
         });
         jsonData("change");
         res.statusCode = 204;
