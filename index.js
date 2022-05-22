@@ -86,9 +86,10 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "GET") {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
+        const todoIndex = todos.findIndex((todo) => todo.id === items[3]);
         res.statusCode = 200;
         console.log(`GET request for todo id:${items[3]} succeeded`);
-        res.end(JSON.stringify(requestedTodo));
+        res.end(JSON.stringify(todos[todoIndex]));
       } else {
         res.statusCode = 404;
         console.log(
@@ -105,7 +106,7 @@ const server = http.createServer(async (req, res) => {
           const updatedTodo = JSON.parse(data);
           const checkmarked = updatedTodo.checkmarked;
           if (checkmarked === false) {
-            todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+            const todoIndex = todos.findIndex((todo) => todo.id === items[3]);
             todos[todoIndex].checkmarked = updatedTodo.checkmarked;
             jsonData("change");
             res.statusCode = 204;
@@ -139,7 +140,7 @@ const server = http.createServer(async (req, res) => {
           const title = typeof updatedTodo.title;
           const checkmarked = updatedTodo.checkmarked;
           if (id === "string" && title === "string" && checkmarked === true) {
-            todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+            const todoIndex = todos.findIndex((todo) => todo.id === items[3]);
             todos[todoIndex] = updatedTodo;
             jsonData("change");
             res.statusCode = 204;
@@ -189,7 +190,7 @@ const server = http.createServer(async (req, res) => {
   } else {
     res.statusCode = 404;
     console.log(
-      `The server can not find the requested resource`
+      `The server can not find the requested route`
     );
     res.end();
   }
