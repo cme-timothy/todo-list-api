@@ -27,8 +27,6 @@ function jsonData(getData) {
 
 const server = http.createServer(async (req, res) => {
   const items = req.url.split("/");
-  console.log(items);
-  console.log(items.length);
   console.log(`${req.method} to url: ${req.url}`);
 
   res.setHeader("Content-Type", "application/json");
@@ -45,6 +43,7 @@ const server = http.createServer(async (req, res) => {
   if (req.url === "/api/todos") {
     if (req.method === "GET") {
       res.statusCode = 200;
+      console.log("GET request for all todos succeeded");
       res.end(JSON.stringify(todos));
     }
     if (req.method === "POST") {
@@ -64,26 +63,37 @@ const server = http.createServer(async (req, res) => {
           todos.push(newTodo);
           jsonData("change");
           res.statusCode = 201;
+          console.log(
+            `POST request for todo id:${newTodo.id} succeeded, and is added on the server`
+          );
           res.end();
         } else if (foundTodo?.id === newTodo.id) {
           res.statusCode = 409;
+          console.log(
+            `POST request for todo id:${newTodo.id} failed, todo already exists on the server`
+          );
           res.end();
         } else {
           res.statusCode = 400;
+          console.log(
+            `POST request for todo id:${newTodo.id} failed, todo object value/values are not allowed`
+          );
           res.end();
         }
       });
-      console.log(items.length);
     }
   } else if (req.url === `/api/todos/${items[3]}`) {
     if (req.method === "GET") {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
         res.statusCode = 200;
+        console.log(`GET request for todo id:${items[3]} succeeded`);
         res.end(JSON.stringify(requestedTodo));
       } else {
         res.statusCode = 404;
-        console.log("Not Found");
+        console.log(
+          `The server can not find the requested resource`
+        );
         res.end();
       }
     }
@@ -99,15 +109,23 @@ const server = http.createServer(async (req, res) => {
             todos[todoIndex].checkmarked = updatedTodo.checkmarked;
             jsonData("change");
             res.statusCode = 204;
+            console.log(
+              `PATCH request for todo id:${items[3]} succeeded, and is updated on the server`
+            );
             res.end();
           } else if (checkmarked !== false) {
             res.statusCode = 400;
+            console.log(
+              `PATCH request for todo id:${newTodo.id} failed, todo object value/values are not allowed`
+            );
             res.end();
           }
         });
       } else {
         res.statusCode = 404;
-        console.log("Not Found");
+        console.log(
+          `The server can not find the requested resource`
+        );
         res.end();
       }
     }
@@ -125,6 +143,9 @@ const server = http.createServer(async (req, res) => {
             todos[todoIndex] = updatedTodo;
             jsonData("change");
             res.statusCode = 204;
+            console.log(
+              `PUT request for todo id:${items[3]} succeeded, and is updated on the server`
+            );
             res.end();
           } else if (
             id !== "string" &&
@@ -133,12 +154,17 @@ const server = http.createServer(async (req, res) => {
           ) {
             res.statusCode = 400;
             console.log("Bad Request");
+            console.log(
+              `POST request for todo id:${newTodo.id} failed, todo object value not allowed`
+            );
             res.end();
           }
         });
       } else {
         res.statusCode = 404;
-        console.log("Not Found");
+        console.log(
+          `The server can not find the requested resource`
+        );
         res.end();
       }
     }
@@ -148,16 +174,23 @@ const server = http.createServer(async (req, res) => {
         todos = todos.filter((todo) => todo.id !== items[3]);
         jsonData("change");
         res.statusCode = 204;
+        console.log(
+          `DELETE request for todo id:${items[3]} succeeded, and is deleted on the server`
+        );
         res.end();
       } else {
         res.statusCode = 404;
-        console.log("Not Found");
+        console.log(
+          `The server can not find the requested resource`
+        );
         res.end();
       }
     }
   } else {
     res.statusCode = 404;
-    console.log("Not Found");
+    console.log(
+      `The server can not find the requested resource`
+    );
     res.end();
   }
   res.end();
