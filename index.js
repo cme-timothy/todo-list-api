@@ -43,8 +43,9 @@ const server = http.createServer(async (req, res) => {
   );
   if (req.url === "/api/todos") {
     if (req.method === "GET") {
+      console.log("Succeded");
       res.statusCode = 200;
-      console.log("GET request for all todos succeeded");
+      res.statusMessage = "GET request for all todos succeeded";
       res.end(JSON.stringify(todos));
     }
     if (req.method === "POST") {
@@ -65,35 +66,26 @@ const server = http.createServer(async (req, res) => {
         ) {
           todos.push(newTodo);
           jsonData("change");
+          console.log("Succeded");
           res.statusCode = 201;
-          console.log(
-            `POST request for todo id:${newTodo.id} succeeded, and is added on the server`
-          );
+          res.statusMessage =
+            "POST request for todo succeeded, and is added onto the server";
           res.end();
         } else if (
           foundTodo?.id === newTodo.id &&
           objectLength === 3 &&
           newTodo.id
         ) {
+          console.log("Failed");
           res.statusCode = 409;
-          console.log(
-            `POST request for todo id:${newTodo.id} failed, todo already exists on the server`
-          );
-          res.end(
-            JSON.stringify(
-              `POST request for todo id:${newTodo.id} failed, todo already exists on the server`
-            )
-          );
+          res.statusMessage =
+            "POST request for todo failed, already exists on the server";
+          res.end();
         } else {
+          console.log("Failed");
           res.statusCode = 400;
-          console.log(
-            `POST request for todo id:${newTodo.id} failed, data not allowed`
-          );
-          res.end(
-            JSON.stringify(
-              `POST request for todo id:${newTodo.id} failed, data not allowed`
-            )
-          );
+          res.statusMessage = "POST request for todo failed, data not allowed";
+          res.end();
         }
       });
     }
@@ -102,19 +94,16 @@ const server = http.createServer(async (req, res) => {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
         const todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+        console.log("Succeded");
         res.statusCode = 200;
-        console.log(`GET request for todo id:${items[3]} succeeded`);
+        res.statusMessage = "GET request for todo succeeded";
         res.end(JSON.stringify(todos[todoIndex]));
       } else {
+        console.log("Failed");
         res.statusCode = 404;
-        console.log(
-          `GET request for todo id:${items[3]} failed, the server can not find the requested resource`
-        );
-        res.end(
-          JSON.stringify(
-            `GET request for todo id:${items[3]} failed, the server can not find the requested resource`
-          )
-        );
+        res.statusMessage =
+          "GET request for todo failed, the server can not find the requested resource";
+        res.end();
       }
     }
     if (req.method === "PATCH") {
@@ -129,33 +118,25 @@ const server = http.createServer(async (req, res) => {
             const todoIndex = todos.findIndex((todo) => todo.id === items[3]);
             todos[todoIndex].checkmarked = updatedTodo.checkmarked;
             jsonData("change");
+            console.log("Succeded");
             res.statusCode = 204;
-            console.log(
-              `PATCH request for todo id:${items[3]} succeeded, and is updated on the server`
-            );
+            res.statusMessage =
+              "PATCH request for todo succeeded, and is updated on the server";
             res.end();
           } else {
+            console.log("Failed");
             res.statusCode = 400;
-            console.log(
-              `PATCH request for todo id:${items[3]} failed, data not allowed`
-            );
-            res.end(
-              JSON.stringify(
-                `PATCH request for todo id:${items[3]} failed, data not allowed`
-              )
-            );
+            res.statusMessage =
+              "PATCH request for todo failed, data not allowed";
+            res.end();
           }
         });
       } else {
+        console.log("Failed");
         res.statusCode = 404;
-        console.log(
-          `PATCH request for todo id:${items[3]} failed, the server can not find the requested resource`
-        );
-        res.end(
-          JSON.stringify(
-            `PATCH request for todo id:${items[3]} failed, the server can not find the requested resource`
-          )
-        );
+        res.statusMessage =
+          "PATCH request for todo failed, the server can not find the requested resource";
+        res.end();
       }
     }
     if (req.method === "PUT") {
@@ -177,33 +158,24 @@ const server = http.createServer(async (req, res) => {
             const todoIndex = todos.findIndex((todo) => todo.id === items[3]);
             todos[todoIndex] = updatedTodo;
             jsonData("change");
+            console.log("Succeded");
             res.statusCode = 204;
-            console.log(
-              `PUT request for todo id:${items[3]} succeeded, and is updated on the server`
-            );
+            res.statusMessage =
+              "PUT request for todo succeeded, and is updated on the server";
             res.end();
           } else {
+            console.log("Failed");
             res.statusCode = 400;
-            console.log(
-              `PUT request for todo id:${items[3]} failed, data not allowed`
-            );
-            res.end(
-              JSON.stringify(
-                `PUT request for todo id:${items[3]} failed, data not allowed`
-              )
-            );
+            res.statusMessage = "PUT request for todo failed, data not allowed";
+            res.end();
           }
         });
       } else {
+        console.log("Failed");
         res.statusCode = 404;
-        console.log(
-          `PUT request for todo id:${items[3]} failed, the server can not find the requested resource`
-        );
-        res.end(
-          JSON.stringify(
-            `PUT request for todo id:${items[3]} failed, the server can not find the requested resource`
-          )
-        );
+        res.statusMessage =
+          "PUT request for todo failed, the server can not find the requested resource";
+        res.end();
       }
     }
     if (req.method === "DELETE") {
@@ -211,27 +183,24 @@ const server = http.createServer(async (req, res) => {
       if (foundTodo) {
         todos = todos.filter((todo) => todo.id !== items[3]);
         jsonData("change");
+        console.log("Succeded");
         res.statusCode = 204;
-        console.log(
-          `DELETE request for todo id:${items[3]} succeeded, and is deleted on the server`
-        );
+        res.statusMessage =
+          "DELETE request for todo succeeded, and is deleted from the server";
         res.end();
       } else {
+        console.log("Failed");
         res.statusCode = 404;
-        console.log(
-          `DELETE request for todo id:${items[3]} failed, the server can not find the requested resource`
-        );
-        res.end(
-          JSON.stringify(
-            `DELETE request for todo id:${items[3]} failed, the server can not find the requested resource`
-          )
-        );
+        res.statusMessage =
+          "DELETE request for todo failed, the server can not find the requested resource";
+        res.end();
       }
     }
   } else {
+    console.log("Failed");
     res.statusCode = 404;
-    console.log(`The server can not find the requested route`);
-    res.end(JSON.stringify(`The server can not find the requested route`));
+    res.statusMessage = "The server can not find the requested route";
+    res.end();
   }
   res.end();
 });
