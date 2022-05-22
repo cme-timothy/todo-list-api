@@ -69,7 +69,7 @@ const server = http.createServer(async (req, res) => {
             `POST request for todo id:${newTodo.id} succeeded, and is added on the server`
           );
           res.end();
-        } else if (foundTodo?.id === newTodo.id && objectLength === 3) {
+        } else if (foundTodo?.id === newTodo.id && objectLength === 3 && newTodo.id) {
           res.statusCode = 409;
           console.log(
             `POST request for todo id:${newTodo.id} failed, todo already exists on the server`
