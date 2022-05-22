@@ -1,6 +1,7 @@
 const http = require("http");
 const fs = require("fs");
 const { allowedNodeEnvironmentFlags } = require("process");
+const { stringify } = require("querystring");
 
 const port = 5000;
 
@@ -69,18 +70,30 @@ const server = http.createServer(async (req, res) => {
             `POST request for todo id:${newTodo.id} succeeded, and is added on the server`
           );
           res.end();
-        } else if (foundTodo?.id === newTodo.id && objectLength === 3 && newTodo.id) {
+        } else if (
+          foundTodo?.id === newTodo.id &&
+          objectLength === 3 &&
+          newTodo.id
+        ) {
           res.statusCode = 409;
           console.log(
             `POST request for todo id:${newTodo.id} failed, todo already exists on the server`
           );
-          res.end();
+          res.end(
+            JSON.stringify(
+              `POST request for todo id:${newTodo.id} failed, todo already exists on the server`
+            )
+          );
         } else {
           res.statusCode = 400;
           console.log(
             `POST request for todo id:${newTodo.id} failed, data not allowed`
           );
-          res.end();
+          res.end(
+            JSON.stringify(
+              `POST request for todo id:${newTodo.id} failed, data not allowed`
+            )
+          );
         }
       });
     }
@@ -97,7 +110,11 @@ const server = http.createServer(async (req, res) => {
         console.log(
           `GET request for todo id:${items[3]} failed, the server can not find the requested resource`
         );
-        res.end();
+        res.end(
+          JSON.stringify(
+            `GET request for todo id:${items[3]} failed, the server can not find the requested resource`
+          )
+        );
       }
     }
     if (req.method === "PATCH") {
@@ -122,7 +139,11 @@ const server = http.createServer(async (req, res) => {
             console.log(
               `PATCH request for todo id:${items[3]} failed, data not allowed`
             );
-            res.end();
+            res.end(
+              JSON.stringify(
+                `PATCH request for todo id:${items[3]} failed, data not allowed`
+              )
+            );
           }
         });
       } else {
@@ -130,7 +151,11 @@ const server = http.createServer(async (req, res) => {
         console.log(
           `PATCH request for todo id:${items[3]} failed, the server can not find the requested resource`
         );
-        res.end();
+        res.end(
+          JSON.stringify(
+            `PATCH request for todo id:${items[3]} failed, the server can not find the requested resource`
+          )
+        );
       }
     }
     if (req.method === "PUT") {
@@ -162,7 +187,11 @@ const server = http.createServer(async (req, res) => {
             console.log(
               `PUT request for todo id:${items[3]} failed, data not allowed`
             );
-            res.end();
+            res.end(
+              JSON.stringify(
+                `PUT request for todo id:${items[3]} failed, data not allowed`
+              )
+            );
           }
         });
       } else {
@@ -170,7 +199,11 @@ const server = http.createServer(async (req, res) => {
         console.log(
           `PUT request for todo id:${items[3]} failed, the server can not find the requested resource`
         );
-        res.end();
+        res.end(
+          JSON.stringify(
+            `PUT request for todo id:${items[3]} failed, the server can not find the requested resource`
+          )
+        );
       }
     }
     if (req.method === "DELETE") {
@@ -186,15 +219,19 @@ const server = http.createServer(async (req, res) => {
       } else {
         res.statusCode = 404;
         console.log(
-          `DELETE request for todo id:${items[3]} succeeded, the server can not find the requested resource`
+          `DELETE request for todo id:${items[3]} failed, the server can not find the requested resource`
         );
-        res.end();
+        res.end(
+          JSON.stringify(
+            `DELETE request for todo id:${items[3]} failed, the server can not find the requested resource`
+          )
+        );
       }
     }
   } else {
     res.statusCode = 404;
     console.log(`The server can not find the requested route`);
-    res.end();
+    res.end(JSON.stringify(`The server can not find the requested route`));
   }
   res.end();
 });
