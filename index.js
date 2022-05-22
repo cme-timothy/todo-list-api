@@ -54,11 +54,13 @@ const server = http.createServer(async (req, res) => {
         const title = typeof newTodo.title;
         const checkmarked = typeof newTodo.checkmarked;
         const foundTodo = todos.find((todos) => todos.id === newTodo.id);
+        const objectLength = Object.keys(newTodo).length;
         if (
           id === "string" &&
           title === "string" &&
           checkmarked === "boolean" &&
-          foundTodo?.id !== newTodo.id
+          foundTodo?.id !== newTodo.id &&
+          objectLength === 3
         ) {
           todos.push(newTodo);
           jsonData("change");
@@ -67,7 +69,7 @@ const server = http.createServer(async (req, res) => {
             `POST request for todo id:${newTodo.id} succeeded, and is added on the server`
           );
           res.end();
-        } else if (foundTodo?.id === newTodo.id) {
+        } else if (foundTodo?.id === newTodo.id && objectLength === 3) {
           res.statusCode = 409;
           console.log(
             `POST request for todo id:${newTodo.id} failed, todo already exists on the server`
@@ -76,7 +78,7 @@ const server = http.createServer(async (req, res) => {
         } else {
           res.statusCode = 400;
           console.log(
-            `POST request for todo id:${newTodo.id} failed, todo object value/values are not allowed`
+            `POST request for todo id:${newTodo.id} failed, data not allowed`
           );
           res.end();
         }
@@ -93,7 +95,7 @@ const server = http.createServer(async (req, res) => {
       } else {
         res.statusCode = 404;
         console.log(
-          `The server can not find the requested resource`
+          `GET request for todo id:${items[3]} failed, the server can not find the requested resource`
         );
         res.end();
       }
@@ -105,7 +107,8 @@ const server = http.createServer(async (req, res) => {
           const data = chunk.toString();
           const updatedTodo = JSON.parse(data);
           const checkmarked = updatedTodo.checkmarked;
-          if (checkmarked === false) {
+          const objectLength = Object.keys(updatedTodo).length;
+          if (checkmarked === false && objectLength === 1) {
             const todoIndex = todos.findIndex((todo) => todo.id === items[3]);
             todos[todoIndex].checkmarked = updatedTodo.checkmarked;
             jsonData("change");
@@ -114,10 +117,10 @@ const server = http.createServer(async (req, res) => {
               `PATCH request for todo id:${items[3]} succeeded, and is updated on the server`
             );
             res.end();
-          } else if (checkmarked !== false) {
+          } else {
             res.statusCode = 400;
             console.log(
-              `PATCH request for todo id:${newTodo.id} failed, todo object value/values are not allowed`
+              `PATCH request for todo id:${items[3]} failed, data not allowed`
             );
             res.end();
           }
@@ -125,7 +128,7 @@ const server = http.createServer(async (req, res) => {
       } else {
         res.statusCode = 404;
         console.log(
-          `The server can not find the requested resource`
+          `PATCH request for todo id:${items[3]} failed, the server can not find the requested resource`
         );
         res.end();
       }
@@ -139,7 +142,13 @@ const server = http.createServer(async (req, res) => {
           const id = typeof updatedTodo.id;
           const title = typeof updatedTodo.title;
           const checkmarked = updatedTodo.checkmarked;
-          if (id === "string" && title === "string" && checkmarked === true) {
+          const objectLength = Object.keys(updatedTodo).length;
+          if (
+            id === "string" &&
+            title === "string" &&
+            checkmarked === true &&
+            objectLength === 3
+          ) {
             const todoIndex = todos.findIndex((todo) => todo.id === items[3]);
             todos[todoIndex] = updatedTodo;
             jsonData("change");
@@ -148,15 +157,10 @@ const server = http.createServer(async (req, res) => {
               `PUT request for todo id:${items[3]} succeeded, and is updated on the server`
             );
             res.end();
-          } else if (
-            id !== "string" &&
-            title !== "string" &&
-            checkmarked !== true
-          ) {
+          } else {
             res.statusCode = 400;
-            console.log("Bad Request");
             console.log(
-              `POST request for todo id:${newTodo.id} failed, todo object value not allowed`
+              `PUT request for todo id:${items[3]} failed, data not allowed`
             );
             res.end();
           }
@@ -164,7 +168,7 @@ const server = http.createServer(async (req, res) => {
       } else {
         res.statusCode = 404;
         console.log(
-          `The server can not find the requested resource`
+          `PUT request for todo id:${items[3]} failed, the server can not find the requested resource`
         );
         res.end();
       }
@@ -182,16 +186,14 @@ const server = http.createServer(async (req, res) => {
       } else {
         res.statusCode = 404;
         console.log(
-          `The server can not find the requested resource`
+          `DELETE request for todo id:${items[3]} succeeded, the server can not find the requested resource`
         );
         res.end();
       }
     }
   } else {
     res.statusCode = 404;
-    console.log(
-      `The server can not find the requested route`
-    );
+    console.log(`The server can not find the requested route`);
     res.end();
   }
   res.end();
