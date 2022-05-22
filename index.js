@@ -90,16 +90,21 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "PATCH") {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
-        req.on("data", (chunk) => {
+        await req.on("data", (chunk) => {
           const data = chunk.toString();
           const updatedTodo = JSON.parse(data);
-          console.log(updatedTodo.checkmarked);
-          todoIndex = todos.findIndex((todo) => todo.id === items[3]);
-          todos[todoIndex].checkmarked = updatedTodo.checkmarked;
+          const checkmarked = updatedTodo.checkmarked;
+          if (checkmarked === false) {
+            todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+            todos[todoIndex].checkmarked = updatedTodo.checkmarked;
+            jsonData("change");
+            res.statusCode = 204;
+            res.end();
+          } else if (checkmarked !== false) {
+            res.statusCode = 400;
+            res.end();
+          }
         });
-        jsonData("change");
-        res.statusCode = 204;
-        res.end();
       } else {
         res.statusCode = 404;
         console.log("Not Found");
