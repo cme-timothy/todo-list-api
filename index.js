@@ -114,16 +114,28 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "PUT") {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
-        req.on("data", (chunk) => {
+        await req.on("data", (chunk) => {
           const data = chunk.toString();
           const updatedTodo = JSON.parse(data);
-          console.log(updatedTodo);
-          todoIndex = todos.findIndex((todo) => todo.id === items[3]);
-          todos[todoIndex] = updatedTodo;
+          const id = typeof updatedTodo.id;
+          const title = typeof updatedTodo.title;
+          const checkmarked = updatedTodo.checkmarked;
+          if (id === "string" && title === "string" && checkmarked === true) {
+            todoIndex = todos.findIndex((todo) => todo.id === items[3]);
+            todos[todoIndex] = updatedTodo;
+            jsonData("change");
+            res.statusCode = 204;
+            res.end();
+          } else if (
+            id !== "string" &&
+            title !== "string" &&
+            checkmarked !== true
+          ) {
+            res.statusCode = 400;
+            console.log("Bad Request");
+            res.end();
+          }
         });
-        jsonData("change");
-        res.statusCode = 204;
-        res.end();
       } else {
         res.statusCode = 404;
         console.log("Not Found");
