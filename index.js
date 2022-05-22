@@ -25,7 +25,7 @@ function jsonData(getData) {
   });
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
   const items = req.url.split("/");
   console.log(items);
   console.log(items.length);
@@ -48,14 +48,32 @@ const server = http.createServer((req, res) => {
       res.end(JSON.stringify(todos));
     }
     if (req.method === "POST") {
-      req.on("data", (chunk) => {
+      await req.on("data", (chunk) => {
         const data = chunk.toString();
         const newTodo = JSON.parse(data);
-        todos.push(newTodo);
+        const id = typeof newTodo.id;
+        const title = typeof newTodo.title;
+        const checkmarked = typeof newTodo.checkmarked;
+        const foundTodo = todos.find((todos) => todos.id === newTodo.id);
+        if (
+          id === "string" &&
+          title === "string" &&
+          checkmarked === "boolean" &&
+          foundTodo?.id !== newTodo.id
+        ) {
+          todos.push(newTodo);
+          jsonData("change");
+          res.statusCode = 201;
+          res.end();
+        } else if (foundTodo?.id === newTodo.id) {
+          res.statusCode = 409;
+          res.end();
+        } else {
+          res.statusCode = 400;
+          res.end();
+        }
       });
-      jsonData("change");
-      res.statusCode = 201;
-      res.end();
+      console.log(items.length);
     }
   } else if (req.url === `/api/todos/${items[3]}`) {
     if (req.method === "GET") {
