@@ -50,8 +50,20 @@ const server = http.createServer((req, res) => {
     }
     if (req.method === "POST") {
       req.on("data", (chunk) => {
-        const data = chunk.toString();
-        const newTodo = JSON.parse(data);
+        let data = chunk.toString();
+        function validatingJSON() {
+          let checkedjson;
+
+          try {
+            checkedjson = JSON.parse(data);
+          } catch (error) {
+            console.log(`JSON.parse error catch: ${error.message}`);
+            return (data = {});
+          }
+
+          return checkedjson;
+        }
+        const newTodo = validatingJSON();
         const id = typeof newTodo.id;
         const title = typeof newTodo.title;
         const checkmarked = typeof newTodo.checkmarked;
@@ -110,8 +122,20 @@ const server = http.createServer((req, res) => {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
         req.on("data", (chunk) => {
-          const data = chunk.toString();
-          const updatedTodo = JSON.parse(data);
+          let data = chunk.toString();
+          function validatingJSON() {
+            let checkedjson;
+
+            try {
+              checkedjson = JSON.parse(data);
+            } catch (error) {
+              console.log(`JSON.parse error catch: ${error.message}`);
+              return (data = {});
+            }
+
+            return checkedjson;
+          }
+          const updatedTodo = validatingJSON();
           const checkmarked = updatedTodo.checkmarked;
           const objectLength = Object.keys(updatedTodo).length;
           if (checkmarked === false && objectLength === 1) {
@@ -143,8 +167,20 @@ const server = http.createServer((req, res) => {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
         req.on("data", (chunk) => {
-          const data = chunk.toString();
-          const updatedTodo = JSON.parse(data);
+          let data = chunk.toString();
+          function validatingJSON() {
+            let checkedjson;
+
+            try {
+              checkedjson = JSON.parse(data);
+            } catch (error) {
+              console.log(`JSON.parse error catch: ${error.message}`);
+              return (data = {});
+            }
+
+            return checkedjson;
+          }
+          const updatedTodo = validatingJSON();
           const id = typeof updatedTodo.id;
           const title = typeof updatedTodo.title;
           const checkmarked = updatedTodo.checkmarked;
