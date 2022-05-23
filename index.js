@@ -26,7 +26,7 @@ function jsonData(getData) {
   });
 }
 
-const server = http.createServer(async (req, res) => {
+const server = http.createServer((req, res) => {
   const items = req.url.split("/");
   console.log(`${req.method} to url: ${req.url}`);
 
@@ -49,7 +49,7 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify(todos));
     }
     if (req.method === "POST") {
-      await req.on("data", (chunk) => {
+      req.on("data", (chunk) => {
         const data = chunk.toString();
         const newTodo = JSON.parse(data);
         const id = typeof newTodo.id;
@@ -89,7 +89,7 @@ const server = http.createServer(async (req, res) => {
         }
       });
     }
-  } else if (req.url === `/api/todos/${items[3]}`) {
+  } else if (req.url === `/api/todos/${items[3]}` && items.length === 4) {
     if (req.method === "GET") {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
@@ -109,7 +109,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "PATCH") {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
-        await req.on("data", (chunk) => {
+        req.on("data", (chunk) => {
           const data = chunk.toString();
           const updatedTodo = JSON.parse(data);
           const checkmarked = updatedTodo.checkmarked;
@@ -142,7 +142,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "PUT") {
       const foundTodo = todos.find((todos) => todos.id === items[3]);
       if (foundTodo) {
-        await req.on("data", (chunk) => {
+        req.on("data", (chunk) => {
           const data = chunk.toString();
           const updatedTodo = JSON.parse(data);
           const id = typeof updatedTodo.id;
@@ -196,13 +196,27 @@ const server = http.createServer(async (req, res) => {
         res.end();
       }
     }
+  } else if (req.method === "OPTIONS") {
+    console.log("Succeded");
+    res.statusCode = 200;
+    res.end();
   } else {
     console.log("Failed");
     res.statusCode = 404;
     res.statusMessage = "The server can not find the requested route";
     res.end();
   }
-  res.end();
+  if (req.method === "OPTIONS") {
+    console.log("Succeded");
+    res.statusCode = 200;
+    res.end();
+  }
+  if (req.method === "POST" && items.length === 4) {
+    console.log("Failed");
+    res.statusCode = 404;
+    res.statusMessage = "The server can not find the requested route";
+    res.end();
+  }
 });
 
 server.listen(port, () => {
