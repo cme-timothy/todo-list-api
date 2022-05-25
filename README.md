@@ -16,9 +16,14 @@ Type in the following command;
 node index.js
 ```
 
+# API route list
+
+- http://localhost:5000/api/todos
+- http://localhost:5000/api/todos/id
+
 # Klient side request examples
 
-This web server is made for this klient side [to-do list](https://github.com/cme-timothy/todo-list-klient).
+The web server is created for this [to-do list](https://github.com/cme-timothy/todo-list-klient).
 
 ## Get all todos
 
