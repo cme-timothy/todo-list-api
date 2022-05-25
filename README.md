@@ -55,11 +55,8 @@ If request succeded then you will recieve status code 200 with status message: G
 
 ## get a single todo
 
-A unique identifier string:
-id: '5CjpiZDd_1G8jhcqVS6t'
-
 ```
-axios.get("http://localhost:5000/api/todos/5CjpiZDd_1G8jhcqVS6t")
+axios.get("http://localhost:5000/api/todos/id")
       .then(function (response) {
         console.log(response.data);
       })
@@ -70,7 +67,7 @@ Output example:
 ```
 [
     {
-        id: '5CjpiZDd_1G8jhcqVS6t',
+        id: 'id',
         title: 'do the dishes',
         checkmarked: false
     }
@@ -81,7 +78,7 @@ If request succeded then you will recieve status code 200 with status message: G
 
 ## Add new todo
 
-A unique identifier string:
+A unique identifier string is needed for example:
 id: '5CjpiZDd_1G8jhcqVS6t'
 
 ```
@@ -97,11 +94,8 @@ If request succeded then you will recieve status code 201 with status message: P
 
 ## Toggle checkmark of todo to off
 
-A unique identifier string:
-id: '5CjpiZDd_1G8jhcqVS6t'
-
 ```
-axios.patch("http://localhost:5000/api/todos/5CjpiZDd_1G8jhcqVS6t",
+axios.patch("http://localhost:5000/api/todos/id",
     {
         checkmarked: false,
     })
@@ -111,13 +105,10 @@ If request succeded then you will recieve status code 204 with status message: P
 
 ## Toggle checkmark of todo to on
 
-A unique identifier string:
-id: '5CjpiZDd_1G8jhcqVS6t'
-
 ```
-axios.put("http://localhost:5000/api/todos/5CjpiZDd_1G8jhcqVS6t",
+axios.put("http://localhost:5000/api/todos/id",
     {
-        id: '5CjpiZDd_1G8jhcqVS6t',
+        id: 'id',
         title: 'do the dishes',
         checkmarked: true
     })
@@ -127,11 +118,8 @@ If request succeded then you will recieve status code 204 with status message: P
 
 ## Delete todo
 
-A unique identifier string:
-id: '5CjpiZDd_1G8jhcqVS6t'
-
 ```
-axios.delete("http://localhost:5000/api/todos/5CjpiZDd_1G8jhcqVS6t")
+axios.delete("http://localhost:5000/api/todos/id")
 ```
 
 If request succeded then you will recieve status code 204 with status message: DELETE request for todo succeeded, and is deleted from the server
